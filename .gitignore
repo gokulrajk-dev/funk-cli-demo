@@ -1,0 +1,29 @@
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+#Test binary, build with `go test -c`
+*.test
+
+#output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+## VisualStudioCode 
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History of VSCode
+.history/
+
+# Built VSCode Extension
+*.vsix
+
+# VSCode Patch
+.history
+.ionide
