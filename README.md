@@ -1,4 +1,16 @@
-<h1 align="center"> funk </h1>
+<h1 align="center">
+```
+ $$$$$$\                      $$\       
+$$  __$$\                     $$ |      
+$$ /  \__|$$\   $$\ $$$$$$$\  $$ |  $$\ 
+$$$$\     $$ |  $$ |$$  __$$\ $$ | $$  |
+$$  _|    $$ |  $$ |$$ |  $$ |$$$$$$  / 
+$$ |      $$ |  $$ |$$ |  $$ |$$  _$$<  
+$$ |      \$$$$$$  |$$ |  $$ |$$ | \$$\ 
+\__|       \______/ \__|  \__|\__|  \__|
+```
+
+</h1>
 
 <p  align="center"> 
     Lightweight suite of useful CLI tools to solve specific annoying problems faced by developers and Linux users alike, written in Go 
