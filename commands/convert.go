@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/urfave/cli/v3"
+	"strconv"
+	"strings"
 )
 
 func ConvertCommand() *cli.Command {
@@ -38,6 +40,7 @@ func ConvertCommand() *cli.Command {
 				Aliases: []string{"tm"},
 				Usage:   "convert to meters",
 			},
+
 			// Weight converters
 			&cli.Float64Flag{
 				Name:    "lbs",
@@ -64,6 +67,7 @@ func ConvertCommand() *cli.Command {
 				Aliases: []string{"tg"},
 				Usage:   "Convert to grams",
 			},
+
 			// temperature converters
 			&cli.Float64Flag{
 				Name:    "celsius",
@@ -84,6 +88,26 @@ func ConvertCommand() *cli.Command {
 				Name:    "to-f",
 				Aliases: []string{"tf"},
 				Usage:   "Convert celsius to fahrenheit",
+			},
+			&cli.StringSliceFlag{
+				Name:    "binary",
+				Aliases: []string{"b"},
+				Usage:   "Enter values in binary in quotes",
+			},
+			&cli.BoolFlag{
+				Name:    "to-hex",
+				Aliases: []string{"th"},
+				Usage:   "Convert binary numbers to hexadecimal",
+			},
+			&cli.StringSliceFlag{
+				Name:    "hex",
+				Aliases: []string{"h"},
+				Usage:   "Enter values in hexadecimal",
+			},
+			&cli.BoolFlag{
+				Name:    "to-binary",
+				Aliases: []string{"tb"},
+				Usage:   "Convert hexadecimal numbers to binary number",
 			},
 		},
 		//	OnUsageError: ErrorHandle,
@@ -160,11 +184,40 @@ func Converto(ctx context.Context, cmd *cli.Command) error {
 		}
 	}
 
-	return nil
+	binary := cmd.StringSlice("binary")
+	if cmd.IsSet("binary") {
+		if cmd.Bool("to-hex") {
+			hexSlice := []string{}
+			for _, binstr := range binary {
+				if val, err := strconv.ParseInt(binstr, 2, 64); err == nil {
+					hexstr := fmt.Sprintf("0x%X", val)
+					fmt.Printf("%s (binary) = %s (hex) \n", binstr, hexstr)
+					hexSlice = append(hexSlice, hexstr)
+				}
 
-}
+			}
 
-func ErrorHandle(ctx context.Context, cmd *cli.Command, err error, isSubcommand bool) error {
+			fmt.Printf("\n%s \n", hexSlice)
+		}
+
+	}
+
+	hex := cmd.StringSlice("hex")
+	if cmd.IsSet("hex") {
+		if cmd.Bool("to-binary") {
+			binSlice := []string{}
+			for _, hexstr := range hex {
+				cleanhex := strings.TrimPrefix(hexstr, "0x")
+				if val, err := strconv.ParseInt(cleanhex, 16, 64); err == nil {
+					binStr := strconv.FormatInt(val, 2)
+					fmt.Printf("%s (hex) = %s (binary) \n", hexstr, binStr)
+					binSlice = append(binSlice, binStr)
+				}
+			}
+			fmt.Printf("\n%s\n", binSlice)
+		}
+	}
+
 	return nil
 
 }
