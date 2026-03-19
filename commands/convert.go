@@ -14,6 +14,21 @@ func ConvertCommand() *cli.Command {
 		Suggest: true,
 		Usage:   "converts various units",
 		Action:  Converto,
+		CustomHelpTemplate: `NAME: 
+	{{.FullName}} - {{.Usage}}
+	 
+USAGE:
+   {{.FullName}} [INPUT FLAGS] TARGET [CONVERSION FLAGS]	
+{{if .VisibleFlagCategories}}  
+FLAGS:  
+	{{template "visibleFlagCategoryTemplate" .}}{{else if .VisibleFlags}}  
+FLAGS:  
+	{{range .VisibleFlags}}   {{.}}  
+	{{end}}{{end}}  	
+EXAMPLES:
+   1. To convert kilometer to meter 
+      $ {{.FullName}} -k[Input Flag] 7 -tm[Conversion Flag] 
+`,
 		Flags: []cli.Flag{
 			// distance converters.
 			&cli.Float64Flag{
