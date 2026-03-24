@@ -4,27 +4,35 @@ import (
 	"context"
 	"fmt"
 	"funk/sqldb"
-	"github.com/nsf/termbox-go"
-	"github.com/urfave/cli/v3"
+	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 	"time"
+
+	"github.com/fatih/color"
+	"github.com/nsf/termbox-go"
+	"github.com/urfave/cli/v3"
+	"golang.org/x/term"
 )
+
+var colorSuccess = color.New(color.FgGreen)
 
 func TimerCommand() *cli.Command {
 	return &cli.Command{
-		Name:   "timer",
-		Usage:  "Set a countdown timer and show Windows toast when done",
-		Action: TimerSet,
+		Name:      "timer",
+		Usage:     "Set a countdown timer and show Windows toast when done",
+		Action:    TimerSet,
+		ArgsUsage: "[task name (optional)]",
 		Flags: []cli.Flag{
 			&cli.IntFlag{
-				Name:  "sec",
-				Usage: "timer duration in seconds",
+				Name:    "sec",
+				Usage:   "timer duration in seconds",
 				Aliases: []string{"s"},
 			},
 			&cli.IntFlag{
-				Name:  "min",
-				Usage: "timer duration in minutes",
+				Name:    "min",
+				Usage:   "timer duration in minutes",
 				Aliases: []string{"m"},
 			},
 			&cli.IntFlag{
@@ -36,9 +44,13 @@ func TimerCommand() *cli.Command {
 				Usage: "show the timer history",
 			},
 			&cli.IntFlag{
-				Name: "del",
-				Usage: "use to delete the timer record",
-				Aliases: []string{"d","rm"},
+				Name:    "del",
+				Usage:   "use to delete the timer record",
+				Aliases: []string{"d", "rm"},
+			},
+			&cli.BoolFlag{
+				Name:  "delete_all",
+				Usage: "use to delete all timer record",
 			},
 		},
 	}
@@ -81,14 +93,14 @@ var digits = map[rune][]string{
 		"   █ ",
 	},
 	'5': {
-		"█████",
+		"████ ",
 		"█    ",
 		"████ ",
 		"    █",
 		"████ ",
 	},
 	'6': {
-		" ███ ",
+		"████ ",
 		"█    ",
 		"████ ",
 		"█   █",
@@ -124,12 +136,45 @@ var digits = map[rune][]string{
 	},
 }
 
-func print_timer(t string) {
-	for row := 0; row < 5; row++ {
-		for _, ch := range t {
-			fmt.Print(digits[ch][row], " ")
-		}
+func print_timer(t string, s int) {
+	width, height, err := term.GetSize(int(os.Stdout.Fd()))
+	if err != nil {
+		width = 80
+		height = 24
+	}
+
+	timerHeight := 5
+
+	topPadding := (height - timerHeight) / 2
+	if topPadding < 0 {
+		topPadding = 0
+	}
+
+	for i := 0; i < topPadding; i++ {
 		fmt.Println()
+	}
+
+	for row := 0; row < timerHeight; row++ {
+		line := ""
+
+		for _, ch := range t {
+			line += digits[ch][row] + " "
+		}
+
+		lineWidth := len([]rune(line))
+
+		leftPadding := (width - lineWidth) / 2
+		if leftPadding < 0 {
+			leftPadding = 0
+		}
+
+		if s > 4 {
+			colorSuccess = color.New(color.FgGreen)
+		} else {
+			colorSuccess = color.New(color.FgRed)
+		}
+
+		colorSuccess.Printf("%*s%s\n", leftPadding, "", line)
 	}
 }
 
@@ -157,22 +202,37 @@ func TimerSet(ctx context.Context, cmd *cli.Command) error {
 		totalSeconds = cmd.Int("hr") * 3600
 
 	case cmd.IsSet("del"):
-		index :=cmd.Int("del")
+		index := cmd.Int("del")
 		sqldb.Delete_Record(index)
 		return nil
 
+	case cmd.Bool("delete_all"):
+		colorSuccess.Println("if you want to delete all record (y/n)")
+		var y_n string
+		fmt.Scanln(&y_n)
+		if len(y_n) > 0 && y_n[0] == 'y' {
+			sqldb.Delete_All_Record()
+		} else {
+			colorSuccess=color.New(color.FgRed)
+			colorSuccess.Println("command is rejected")
+		}
+		return nil
 
 	default:
-		return fmt.Errorf("please specify one of: --sec, --min, or --hr")
+		return fmt.Errorf("please specify one of: --sec, --min, --hr, --his or --del")
 	}
 
 	if totalSeconds <= 0 {
 		return fmt.Errorf("duration must be positive")
 	}
 
-	sqldb.Create_db()
+	task := "No Name"
 
-	fmt.Println("Timer Start")
+	if cmd.NArg() > 0 {
+		task = strings.Join(cmd.Args().Slice(), " ")
+	}
+
+	sqldb.Create_db()
 
 	switch runtime.GOOS {
 	case "windows":
@@ -217,6 +277,8 @@ func TimerSet(ctx context.Context, cmd *cli.Command) error {
 				if ev.Type == termbox.EventKey {
 					if ev.Key == termbox.KeyCtrlC || ev.Ch == 'q' {
 						control <- "stop"
+						fmt.Println("timer stop")
+						fmt.Println("insert timer data in db successfully \nCommand 'funk timer --his' ")
 						return
 					}
 					if ev.Key == termbox.KeySpace {
@@ -247,10 +309,11 @@ func TimerSet(ctx context.Context, cmd *cli.Command) error {
 			select {
 			case con := <-control:
 				if con == "stop" {
-					sqldb.Insert_data(h, m, s)
-					fmt.Println("\nTimer stopped")
+
+					save_timer(h, m, s, task)
 					return nil
 				}
+
 				if con == "pause" {
 					state = "pause"
 				}
@@ -262,21 +325,28 @@ func TimerSet(ctx context.Context, cmd *cli.Command) error {
 				a := fmt.Sprintf("%02d:%02d:%02d", h, m, s)
 				if state == "pause" {
 					clearScreen()
+					fmt.Println("\nTimer Pause")
 				} else if state == "resume" {
 					clearScreen()
 					st_timer--
 				}
-				print_timer(a)
+				print_timer(a, st_timer)
 				time.Sleep(time.Second)
 				if st_timer < 0 {
-					sqldb.Insert_data(h1, m1, s1)
+					save_timer(h1, m1, s1, task)
 				}
 			}
 		}
 		fmt.Println("\ntimer finish")
+		fmt.Println("insert timer data in db successfully \nCommand 'funk timer --his' ")
 	}
-
 	return nil
+}
+
+func save_timer(h int, m int, s int, task string) {
+	termbox.Close()
+	sqldb.Insert_data(h, m, s, task)
+
 }
 
 func timer_cal(i int) (int, int, int) {
