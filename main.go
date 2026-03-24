@@ -15,6 +15,7 @@ func main() {
 		Commands: []*cli.Command{
 			commands.ConvertCommand(),
 			commands.TimerCommand(),
+			commands.Todos(),
 		},
 	}
 
