@@ -24,6 +24,7 @@ func TimerCommand() *cli.Command {
 		Usage:     "Set a countdown timer and show Windows toast when done",
 		Action:    TimerSet,
 		ArgsUsage: "[task name (optional)]",
+		Aliases: []string{"tm"},
 		Flags: []cli.Flag{
 			&cli.IntFlag{
 				Name:    "sec",
