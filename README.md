@@ -36,5 +36,6 @@ It's a collection of little helpers that live in your terminal and solve those t
 * _**Developers**_ who spend 80% of their time in terminal (hello, fellow cool kids!).
 * _**System Admins**_ who need quick solutions without writing 50-line scripts.
 * _**Terminal Enthusiasts**_ who think GUIs are overrated.
+* _**Power Users**_ who want more control over their files without leaving the terminal.
 * _**Ricers of r/unixporn**_ who are looking for the next cool CLI tool for their thinkpad with Arch(btw). 
 
