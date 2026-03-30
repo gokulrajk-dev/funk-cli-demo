@@ -46,7 +46,6 @@ func Task(ctx context.Context, cmd *cli.Command) error {
 		task := cmd.String("add")
 		sqldb.AddTask(task)
 		
-
 	case cmd.Bool("task"):
 		sqldb.ListTasks()
 

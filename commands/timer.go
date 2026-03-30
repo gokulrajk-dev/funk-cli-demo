@@ -17,6 +17,7 @@ import (
 )
 
 var colorSuccess = color.New(color.FgGreen)
+var colorSuccesss = color.New(color.FgGreen)
 
 func TimerCommand() *cli.Command {
 	return &cli.Command{
@@ -183,12 +184,18 @@ func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
+
 func TimerSet(ctx context.Context, cmd *cli.Command) error {
 
 	var totalSeconds int
 
 	if cmd.Bool("his") {
 		sqldb.Show_history()
+		return nil
+	}
+
+	if !cmd.IsSet("sec") && !cmd.IsSet("min") && !cmd.IsSet("hr") && !cmd.IsSet("del") && !cmd.IsSet("delete_all"){
+		colorYellow.Println("  ⚠  No flag provided. Use --help to see all available flags.")
 		return nil
 	}
 
@@ -279,7 +286,7 @@ func TimerSet(ctx context.Context, cmd *cli.Command) error {
 					if ev.Key == termbox.KeyCtrlC || ev.Ch == 'q' {
 						control <- "stop"
 						fmt.Println("timer stop")
-						fmt.Println("insert timer data in db successfully \nCommand 'funk timer --his' ")
+						colorSuccesss.Println("insert timer data in db successfully \nCommand 'funk timer --his' ")
 						return
 					}
 					if ev.Key == termbox.KeySpace {
@@ -339,7 +346,7 @@ func TimerSet(ctx context.Context, cmd *cli.Command) error {
 			}
 		}
 		fmt.Println("\ntimer finish")
-		fmt.Println("insert timer data in db successfully \nCommand 'funk timer --his' ")
+		colorSuccesss.Println("insert timer data in db successfully \nCommand 'funk timer --his' ")
 	}
 	return nil
 }

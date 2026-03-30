@@ -43,7 +43,6 @@ func InitTable() {
 if err != nil {
 	log.Fatal(err)
 }
-	fmt.Println("table create successfully")
 }
 
 func AddTask(task string) {

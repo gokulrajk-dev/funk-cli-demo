@@ -8,9 +8,12 @@ import (
 	"net/http"
 	"sync"
 	"time"
-
+	"github.com/fatih/color"
 	"github.com/urfave/cli/v3"
 )
+
+var colorSucces = color.New(color.BgCyan)
+var colorYellows = color.New(color.FgYellow)
 
 func Isps() *cli.Command {
 	return &cli.Command{
@@ -30,8 +33,7 @@ func Isps() *cli.Command {
 func Net_Speed(cxt context.Context, cmd *cli.Command) error {
 
 	if !cmd.Bool("start") {
-		fmt.Println("❌ Please use --start to begin the speed test")
-		fmt.Println("👉 Example: funk internet_speed --start")
+		colorYellow.Println("  ⚠  No flag provided. Use --help to see all available flags.")
 		return nil
 	}
 
