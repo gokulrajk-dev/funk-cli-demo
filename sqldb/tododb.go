@@ -30,8 +30,6 @@ func InitTable() {
 	db := ConnectDB1()
 	defer db.Close()
 
-	fmt.Println(("this is db file"))
-
 	_, err := db.Exec(`
 	CREATE TABLE IF NOT EXISTS tasks (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,7 +53,7 @@ func AddTask(task string) {
 	if err !=nil{
 		log.Fatal(err)
 	}
-	fmt.Println("task added successfully ","'",task,"'"," \n Command 'funk todo --task'")
+	fmt.Println("task added successfully ","'",task,"'"," \nCommand 'funk todo --task'")
 }
 
 func ListTasks() {

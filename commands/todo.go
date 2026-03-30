@@ -7,6 +7,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+
 func Todos() *cli.Command {
 	return &cli.Command{
 		Name:   "todo",
@@ -61,7 +62,7 @@ func Task(ctx context.Context, cmd *cli.Command) error {
 		if len(complete) > 0 && complete[0] == 'y'{
 		sqldb.Update_Task(index)
 		}else{
-			fmt.Println("complete the task and after update")
+			fmt.Println("complete the task and afterwards update")
 		}
 		
 

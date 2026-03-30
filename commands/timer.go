@@ -25,7 +25,7 @@ func TimerCommand() *cli.Command {
 		Usage:     "Set a countdown timer and show Windows toast when done",
 		Action:    TimerSet,
 		ArgsUsage: "[task name (optional)]",
-		Aliases: []string{"tm"},
+		Aliases:   []string{"tm"},
 		Flags: []cli.Flag{
 			&cli.IntFlag{
 				Name:    "sec",
@@ -184,7 +184,6 @@ func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
-
 func TimerSet(ctx context.Context, cmd *cli.Command) error {
 
 	var totalSeconds int
@@ -194,40 +193,40 @@ func TimerSet(ctx context.Context, cmd *cli.Command) error {
 		return nil
 	}
 
-	if !cmd.IsSet("sec") && !cmd.IsSet("min") && !cmd.IsSet("hr") && !cmd.IsSet("del") && !cmd.IsSet("delete_all"){
+	if !cmd.IsSet("sec") && !cmd.IsSet("min") && !cmd.IsSet("hr") && !cmd.IsSet("del") && !cmd.IsSet("delete_all") {
 		colorYellow.Println("  ⚠  No flag provided. Use --help to see all available flags.")
 		return nil
 	}
 
-	switch {
-	case cmd.IsSet("sec"):
-		totalSeconds = cmd.Int("sec")
-
-	case cmd.IsSet("min"):
-		totalSeconds = cmd.Int("min") * 60
-
-	case cmd.IsSet("hr"):
-		totalSeconds = cmd.Int("hr") * 3600
-
-	case cmd.IsSet("del"):
+	if cmd.IsSet("del") {
 		index := cmd.Int("del")
 		sqldb.Delete_Record(index)
 		return nil
+	}
 
-	case cmd.Bool("delete_all"):
+	if cmd.Bool("delete_all") {
 		colorSuccess.Println("if you want to delete all record (y/n)")
 		var y_n string
 		fmt.Scanln(&y_n)
 		if len(y_n) > 0 && y_n[0] == 'y' {
 			sqldb.Delete_All_Record()
 		} else {
-			colorSuccess=color.New(color.FgRed)
+			colorSuccess = color.New(color.FgRed)
 			colorSuccess.Println("command is rejected")
 		}
 		return nil
+	}
 
-	default:
-		return fmt.Errorf("please specify one of: --sec, --min, --hr, --his or --del")
+	if cmd.IsSet("sec") {
+		totalSeconds += cmd.Int("sec")
+	}
+
+	if cmd.IsSet("min") {
+		totalSeconds += cmd.Int("min") * 60
+	}
+
+	if cmd.IsSet("hr") {
+		totalSeconds += cmd.Int("hr") * 3600
 	}
 
 	if totalSeconds <= 0 {
