@@ -13,11 +13,7 @@
 
 </p>
 
-
-
 ---
-
-# Funk CLI — Feature Documentation
 
 > Lightweight suite of useful CLI tools to solve specific annoying problems faced by developers and Linux users alike, written in Go.
 
@@ -43,7 +39,7 @@
 
 **funk** is a terminal multi-tool. a collection of small, focused utilities that solve everyday annoyances for developers, sysadmins, and terminal enthusiasts. Instead of Googling unit conversions, writing one-off scripts, or hunting for bloated files, you just run a funky `funk` command.
 
-Funk was build to be simple, lightweight and easy to use so that no one has to open a slow chrome tab to perform simple tasks, get quick information. More tools will be added and with our unique installation script, users can pick and choose which tools they would like to install for their workflow. 
+Funk was built to be simple, lightweight and easy to use so that no one has to open a slow chrome tab to perform simple tasks, get quick information. More tools will be added and with our unique installation script, users can pick and choose which tools they would like to install for their workflow. 
 
 
 ---
