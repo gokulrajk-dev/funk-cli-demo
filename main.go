@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"funk/commands"
+	"github.com/gokulrajk-dev/funk-cli-demo/commands"
 	"log"
 	"os"
 	"strings"
