@@ -1,4 +1,4 @@
-module funk
+module github.com/gokulrajk-dev/funk-cli-demo
 
 go 1.25.7
 
