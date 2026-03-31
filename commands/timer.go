@@ -4,7 +4,7 @@ package commands
 import (
 	"context"
 	"fmt"
-	"funk/sqldb"
+	"github.com/gokulrajk-dev/funk-cli-demo/sqldb"
 	"os"
 	"os/exec"
 	"runtime"
