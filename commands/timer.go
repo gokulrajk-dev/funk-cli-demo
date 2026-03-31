@@ -10,7 +10,6 @@ import (
 	"runtime"
 	"strings"
 	"time"
-
 	"github.com/fatih/color"
 	"github.com/nsf/termbox-go"
 	"github.com/urfave/cli/v3"
@@ -18,8 +17,6 @@ import (
 )
 
 var colorSuccess = color.New(color.FgGreen)
-
-
 
 func TimerCommand() *cli.Command {
 	return &cli.Command{
