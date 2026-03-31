@@ -3,6 +3,7 @@ module funk
 go 1.25.7
 
 require (
+	codeberg.org/go-pdf/fpdf v0.11.1
 	github.com/alexeyco/simpletable v1.0.0
 	github.com/fatih/color v1.19.0
 	github.com/mattn/go-sqlite3 v1.14.34
