@@ -1,3 +1,4 @@
+//go:build convert || all
 package commands
 
 import (
@@ -7,6 +8,11 @@ import (
 	"strconv"
 	"strings"
 )
+
+func init() {
+	AvailableCommands = append(AvailableCommands, ConvertCommand())
+}
+
 
 func ConvertCommand() *cli.Command {
 	return &cli.Command{

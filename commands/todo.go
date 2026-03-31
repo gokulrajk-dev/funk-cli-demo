@@ -1,3 +1,4 @@
+//go:build todo || all
 package commands
 
 import (
@@ -7,6 +8,9 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+func init() {
+	AvailableCommands = append(AvailableCommands, Todos())
+}
 
 func Todos() *cli.Command {
 	return &cli.Command{

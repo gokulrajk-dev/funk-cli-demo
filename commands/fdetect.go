@@ -1,3 +1,4 @@
+//go:build file || all
 package commands
 
 import (
@@ -20,6 +21,12 @@ var (
 	colorCyan   = color.New(color.FgCyan, color.Bold)
 	colorYellow = color.New(color.FgYellow)
 )
+
+func init() {
+	AvailableCommands = append(AvailableCommands, FileDetectCommand())
+}
+
+
 
 // TERMINAL WIDTH
 func termWidth() int {

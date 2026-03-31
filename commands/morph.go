@@ -1,3 +1,4 @@
+//go:build morph || all
 package commands
 
 import (
@@ -7,6 +8,11 @@ import (
 	"github.com/urfave/cli/v3"
 	"os"
 )
+
+func init() {
+	AvailableCommands = append(AvailableCommands, Morph())
+}
+
 
 func morphi(ctx context.Context, cmd *cli.Command) error {
 

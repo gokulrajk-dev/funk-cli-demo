@@ -1,3 +1,4 @@
+//go:build isps || all
 package commands
 
 import (
@@ -11,6 +12,10 @@ import (
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v3"
 )
+
+func init() {
+	AvailableCommands = append(AvailableCommands, Isps())
+}
 
 var colorSucces = color.New(color.BgCyan)
 var colorYellows = color.New(color.FgYellow)
